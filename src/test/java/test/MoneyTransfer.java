@@ -1,7 +1,6 @@
 package test;
 
 
-
 import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ class MoneyTransfer {
         var balanceFirstAfter = balanceFirstBefore + amount;
         var balanceSecondAfter = balanceSecondBefore - amount;
         var verificationFirstCard = DataHelper.getFirstCardsInfo(amount);
-        dashboardPage.personFirstCard().card(verificationFirstCard);
+        dashboardPage.personFirstCard().makeTransfer(verificationFirstCard);
 
         assertEquals(balanceFirstAfter, dashboardPage.getCardBalance(0));
         assertEquals(balanceSecondAfter, dashboardPage.getCardBalance(1));
@@ -50,7 +49,7 @@ class MoneyTransfer {
         var balanceFirstAfter = balanceFirstBefore - amount;
         var balanceSecondAfter = balanceSecondBefore + amount;
         var verificationSecondCard = DataHelper.getSecondCardsInfo(amount);
-        dashboardPage.personSecondCard().card(verificationSecondCard);
+        dashboardPage.personSecondCard().makeTransfer(verificationSecondCard);
 
         assertEquals(balanceFirstAfter, dashboardPage.getCardBalance(0));
         assertEquals(balanceSecondAfter, dashboardPage.getCardBalance(1));
@@ -61,13 +60,14 @@ class MoneyTransfer {
         var dashboardPage = new DashboardPage();
         var balanceFirstBefore = dashboardPage.getCardBalance(0);
         var balanceSecondBefore = dashboardPage.getCardBalance(1);
-        var balanceFirstAfter = balanceFirstBefore - bigAmount;
-        var balanceSecondAfter = balanceSecondBefore + bigAmount;
         var verificationSecondCard = DataHelper.getSecondCardsInfo(bigAmount);
-        dashboardPage.personSecondCard().card(verificationSecondCard);
+        var transferPage = dashboardPage.personSecondCard();
+        transferPage.makeTransfer(verificationSecondCard);
+        transferPage.getErrorAmount();
 
-        assertEquals(balanceFirstAfter, dashboardPage.getCardBalance(0));
-        assertEquals(balanceSecondAfter, dashboardPage.getCardBalance(1));
+        assertEquals(balanceFirstBefore, dashboardPage.getCardBalance(0));
+        //тест должен упасть
+        assertEquals(balanceSecondBefore, dashboardPage.getCardBalance(1));
     }
 
 }
